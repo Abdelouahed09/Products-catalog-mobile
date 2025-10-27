@@ -1,50 +1,117 @@
-# Welcome to your Expo app 👋
+# Products Catalog Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern React Native app built with Expo Router for browsing a product catalog: search, filter by category, sort by price, like items, and enjoy offline-friendly caching.
 
-## Get started
+## 📦 Getting Started
 
-1. Install dependencies
+### Prerequisites
 
-   ```bash
-   npm install
-   ```
+- Node.js 18+ (LTS recommended)
+- npm (or pnpm/yarn)
+- Expo Go app on your device, or Android Studio / Xcode for emulators
 
-2. Start the app
+### Quick start
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+From the project root:
 
 ```bash
-npm run reset-project
+npm install && npm start
+# or
+npm install && npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Then in the Expo CLI terminal:
 
-## Learn more
+- Press `a` to launch Android
+- Press `i` to launch iOS (macOS + Xcode required)
+- Press `w` to open on web
+- Or scan the QR code with the Expo Go app
 
-To learn more about developing your project with Expo, look at the following resources:
+### Useful scripts
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- `npm start` — Start the Expo dev server
+- `npm run android` — Start on Android
+- `npm run ios` — Start on iOS
+- `npm run web` — Start on web
+- `npm run lint` — Run ESLint
+- `npm run reset-project` — Clean and re-init project metadata
 
-## Join the community
+## 📁 Project Structure
 
-Join our community of developers creating universal apps.
+```
+app/
+  _layout.tsx              # Root: QueryClientProvider + StatusBar + Stack
+  (tabs)/
+    _layout.tsx            # Tabs with header and theming
+    index.tsx              # Products list: search, filter, sort, infinite scroll
+    liked.tsx              # Liked products (persisted)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+components/
+  ui/
+    Toolbar.tsx            # Search + filter + sort actions
+    CategoryModal.tsx      # Category picker modal
+    ProductCard.tsx        # Product item UI
+
+types/
+  product.ts               # Shared Product type
+
+assets/images/             # Icons, splash assets
+```
+
+## ✨ Features
+
+- Search by title, filter by category, sort by price
+- Infinite scrolling with responsive 1–3 column grid
+- Like/favorite products; favorites are persisted locally
+- Offline-friendly: products/categories cached to AsyncStorage and used as fallback
+- Error and loading states with retry
+
+## 🌐 API
+
+The app reads public data from [Fake Store API](https://fakestoreapi.com):
+
+- `https://fakestoreapi.com/products`
+- `https://fakestoreapi.com/products/categories`
+
+## 🧠 Design Decisions
+
+### Data fetching with React Query
+
+- Components use `useQuery` for declarative data fetching and caching.
+- Central provider configured in `app/_layout.tsx` with a single `QueryClient`.
+- Conservative defaults: `retry: 1`, explicit `staleTime`/`gcTime` to balance freshness and memory.
+
+### Offline-first via AsyncStorage
+
+- Successful fetches cache products/categories in `AsyncStorage`.
+- If a network request fails, cached data is used as a transparent fallback.
+- Favorites are stored as a Set of product IDs in `AsyncStorage` and synchronized on focus.
+
+### Styling with explicit hex colors
+
+- All colors are defined with hex codes (e.g., `#0B1220`) to avoid platform inconsistencies on Android.
+- Consistent dark theme across screens; components use `StyleSheet` with hex values.
+
+### Navigation and layout
+
+- File-based routing with Expo Router; tabs defined in `app/(tabs)/_layout.tsx`.
+- Status bar theme and header styles use hex colors for consistency.
+- Expo config enables new architecture and typed routes experiments for future-proofing.
+
+### Performance considerations
+
+- `FlatList` tuned with `initialNumToRender`, `windowSize`, `removeClippedSubviews`.
+- Derivations memoized (`useMemo`), handlers stabilized (`useCallback`).
+- Responsive columns computed from `useWindowDimensions()`; list `key` resets on column count changes to prevent layout glitches.
+- Images rendered with `expo-image` for better performance and content fit.
+
+## 🔧 Troubleshooting
+
+- Clear Metro cache: `npx expo start -c`
+- Android emulator not connecting: ensure `adb` is running, or try restarting: `adb kill-server && adb start-server`
+- iOS build issues (on macOS): ensure Xcode and command line tools are installed and updated
+- Reanimated warnings: run a clean start (`expo start -c`); Expo manages necessary config
+
+Created by :
+
+## Abdelouahed Amalas
