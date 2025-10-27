@@ -105,6 +105,22 @@ The app reads public data from [Fake Store API](https://fakestoreapi.com):
 - Responsive columns computed from `useWindowDimensions()`; list `key` resets on column count changes to prevent layout glitches.
 - Images rendered with `expo-image` for better performance and content fit.
 
+## 📝 Notes on Design Decisions
+
+- **React Query everywhere**: Consistent `useQuery` usage aligns with offline caching and retry settings.
+- **Hex color palette**: Explicit hex values ensure color consistency on Android devices.
+- **Offline-friendly UX**: AsyncStorage caches successful responses and provides graceful fallbacks on failures.
+- **Performance-tuned lists**: `FlatList` parameters are set for memory and render efficiency on low-end devices.
+- **Modular UI**: `components/ui` keeps presentational concerns separate from data fetching.
+
+## 🚧 Improvements with More Time
+
+- **E2E and unit tests**: Jest/RTL for components and Detox for device flows.
+- **Optimistic interactions**: Optimistic like/unlike with rollback and subtle haptics.
+- **Image performance**: CDN parameters, stronger caching, and low-quality placeholders (LQIP).
+- **Background sync**: Refresh caches on app resume and periodic background fetch.
+- **Error resilience**: Central error boundary screen with retry and diagnostics.
+
 ## 🔧 Troubleshooting
 
 - Clear Metro cache: `npx expo start -c`
